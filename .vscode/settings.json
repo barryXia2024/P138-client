@@ -1,0 +1,14 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "treeMaker.search.ignoreFilePathPatternOnExport": [
+
+        "**/node_modules/**",
+        "**/build/**",
+        "**/dist/**",
+        "**/tmp/**",
+        "**/vendor/**",
+        "**/tree-maker/**",
+        "**/api/**",
+        "**/assets/**",
+    ]
+}

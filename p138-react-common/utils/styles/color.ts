@@ -1,0 +1,10 @@
+export const themeRedColor = "#FF4D4F";
+export const themeGrayColor = "#9CA3AF";
+export const betPlayColorBlue = "#72a7de";
+export const betPlayColorGreen = "#71cbca";
+export const betPlayColorPurple = "#8790dc";
+export const betPlayColorBrown = "#eaa659";
+export const themePinkColor = "#ffebe8";
+// export const themeBlueColor = "#eff7ff";
+export const themeBlueColor = "#1984ff";
+export const themeLittleBlueColor = "#f0f9ff";

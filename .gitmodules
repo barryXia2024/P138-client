@@ -1,0 +1,3 @@
+[submodule "p138-react-common"]
+	path = p138-react-common
+url=git@bitbucket.org:tencent-international/p138-react-common.git

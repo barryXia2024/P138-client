@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "p138-client",
+    "slug": "p138client",
+    "scheme": "p138-client",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon_mao.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e0494986-6357-4b9a-8f5b-18a923db6442",
+      "enabled": true,
+      "requestHeaders": {
+        "expo-channel-name": "development"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.barry.ming.p138client"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon_mao.png",
+        "backgroundColor": "#ffffff"
+      },
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.barry.ming.p138client",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/icon_mao.png",
+      "bundler": "metro",
+       "viewport": "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
+  
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "e0494986-6357-4b9a-8f5b-18a923db6442",
+        "channel": "development",
+        "branch": "development"
+      },
+      "mqtt": {
+        "development": {
+          "url": "ws://192.168.31.249:8887/ws",
+          "clientId": "mqtt-dev-client"
+        },
+        "staging": {
+          "url": "wss://admin-api-p138-dev.lengz.cc/ws",
+          "clientId": "mqtt-staging-client"
+        },
+        "production": {
+          "url": "wss://admin-api-p138-prod.lengz.cc/ws",
+          "clientId": "mqtt-prod-client"
+        }
+      }
+    }
+  }
+}

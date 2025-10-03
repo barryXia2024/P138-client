@@ -1,0 +1,59 @@
+{
+  "name": "p138-openim",
+  "version": "1.0.0",
+  "description": "基于 OpenIM SDK 的跨平台聊天库",
+  "main": "index.ts",
+  "types": "index.ts",
+  "keywords": [
+    "openim",
+    "chat",
+    "im",
+    "react-native",
+    "web",
+    "typescript"
+  ],
+  "author": "P138 Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/p138-openim"
+  },
+  "files": [
+    "src/",
+    "index.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/",
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "zustand": "^4.0.0",
+    "react": ">=17.0.0",
+    "react-native": ">=0.70.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
+  },
+  "optionalDependencies": {
+    "open-im-sdk-rn": "^3.5.1",
+    "@react-native-async-storage/async-storage": "^1.19.0",
+    "expo-file-system": "^15.0.0",
+    "@openim/client-sdk": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

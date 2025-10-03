@@ -1,0 +1,155 @@
+definitions:
+  caches:
+    yarn: ~/.yarn/cache
+  steps:
+    - &build_dockerize
+      name: Build Docker Image
+      runs-on:
+        - self.hosted
+        - linux.shell
+      caches:
+        - yarn
+      script:
+        - git submodule sync --recursive
+        - git submodule update --init --recursive
+
+        - yarn cache clean
+        - rm -rf /usr/local/share/.cache/yarn
+        - yarn install 
+        - yarn build:web
+        - echo "Generating Dockerfile..."
+        - |
+          if [ -n "$BITBUCKET_TAG" ]; then
+            export VERSION=$BITBUCKET_TAG
+          elif [ -n "$BITBUCKET_COMMIT" ]; then
+            export VERSION=${BITBUCKET_COMMIT:0:7}
+          fi
+          export APP_NAME=$BITBUCKET_REPO_SLUG
+          export PROJECT_NAME=$(echo "$BITBUCKET_PROJECT_KEY" | tr '[:upper:]' '[:lower:]')
+          echo "VERSION=$VERSION" >> build.env
+          echo "APP_NAME=$APP_NAME" >> build.env
+          echo "PROJECT_NAME=$PROJECT_NAME" >> build.env
+        - |
+          cat <<EOF > Dockerfile
+          FROM nginx:alpine
+          WORKDIR /usr/share/nginx/html
+          RUN rm -rf ./*
+          COPY dist /usr/share/nginx/html
+          COPY default.conf /etc/nginx/conf.d/default.conf
+          RUN mkdir -p /etc/nginx/apk
+          COPY ./apk/138.apk /etc/nginx/apk
+          EXPOSE 80
+          CMD ["nginx", "-g", "daemon off;"]
+          EOF
+        - echo "Building Docker image..."
+        - docker build -t "$REGISTRY_SERVER/$PROJECT_NAME/$APP_NAME:$VERSION" .
+        - echo "$REGISTRY_CREDENTIALS" | docker login "$REGISTRY_SERVER" -u "$REGISTRY_ACCOUNT" --password-stdin
+        - docker push "$REGISTRY_SERVER/$PROJECT_NAME/$APP_NAME:$VERSION"
+      artifacts:
+        - build.env
+    - &deploy
+      name: Deploy to Kubernetes
+      runs-on:
+        - self.hosted
+        - linux.shell
+      clone:
+        enabled: false  # 禁用代码克隆
+      script:
+        - echo "Deploying application to Kubernetes..."
+        - echo $KUBE_CONFIG_BASE64 | base64 -d > kubeconfig
+        - export KUBECONFIG=kubeconfig
+        - source build.env
+        - export ENVIRONMENT=dev
+        - K8S_NAMESPACE=${PROJECT_NAME}
+        - |
+          echo "Generating Kubernetes deployment file..."
+          cat <<EOF > ./deployment.yaml
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: ${K8S_NAMESPACE}
+          ---
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: ${APP_NAME}
+            namespace: ${K8S_NAMESPACE}
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: ${APP_NAME}
+            template:
+              metadata:
+                labels:
+                  app: ${APP_NAME}
+              spec:
+                containers:
+                - name: ${APP_NAME}
+                  image: ${REGISTRY_SERVER}/${PROJECT_NAME}/${APP_NAME}:${VERSION}
+                  imagePullPolicy: Always
+                  envFrom:
+                  - configMapRef:
+                      name: namespace-config
+                      optional: true
+                  - secretRef:
+                      name: namespace-secret
+                      optional: true
+                  env:
+                  - name: APP_NAME
+                    value: "${APP_NAME}"
+                  - name: SERVICE_HOST
+                    value: "${APP_NAME}.${K8S_NAMESPACE}.svc.cluster.local"
+                  - name: POD_NAME
+                    valueFrom:
+                      fieldRef:
+                        fieldPath: metadata.name
+                  - name: INITIALIZING
+                    value: "${INITIALIZING:-false}"
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: ${APP_NAME}
+            namespace: ${K8S_NAMESPACE}
+          spec:
+            selector:
+              app: ${APP_NAME}
+            ports:
+              - protocol: TCP
+                name: internal-http
+                port: 80
+                targetPort: 80
+          EOF
+        - echo "Applying Kubernetes configurations..."
+        - cat deployment.yaml
+        - kubectl apply -f ./deployment.yaml
+        - |
+          echo "Polling deployment status..."
+          MAX_ATTEMPTS=60
+          SLEEP_INTERVAL=3
+          for (( i=1; i<=MAX_ATTEMPTS; i++ )); do
+            AVAILABLE_REPLICAS=$(kubectl get deployment ${APP_NAME} -n ${PROJECT_NAME} -o jsonpath='{.status.availableReplicas}')
+            if [ "$AVAILABLE_REPLICAS" == "1" ]; then
+              echo "Deployment successful: ${APP_NAME} is available."
+              break
+            fi
+
+            if [ $i -eq $MAX_ATTEMPTS ]; then
+              echo "Deployment failed: ${APP_NAME} did not become available after $((MAX_ATTEMPTS * SLEEP_INTERVAL)) seconds."
+              exit 1
+            fi
+
+            echo "Waiting for deployment to become available... (Attempt $i/$MAX_ATTEMPTS)"
+            sleep $SLEEP_INTERVAL
+          done
+
+pipelines:
+  branches:
+    main:
+      - step: *build_dockerize
+      - step: *deploy
+  tags:
+    v*:
+      - step: *build_dockerize
+      - step: *deploy

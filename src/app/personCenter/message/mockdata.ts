@@ -1,0 +1,93 @@
+export const mockData: ServerCommonMessage.ListMessageResult = {
+  total: 2,
+  query: {
+    current: 1,
+    pageSize: 10,
+    sort: 'createdAt',
+    direction: 'desc',
+    userID: '100611895',
+  },
+  list: [
+    {
+      id: '12241499',
+      userId: 100611895,
+      shopId: 37947,
+      msgType: 1,
+      msgTypeName: '订单消息',
+      msgSubType: 3,
+      msgSubTypeName: '已取消',
+      createTime: '2025-06-26 10:48:15',
+      status: 1,
+      orderNo: '41270616',
+      content:
+        '<p><strong>竞彩足球</strong>&nbsp;混合投注</p><p>购买时间:&nbsp;2025-06-26 10:47:58</p><p>订单编号:&nbsp;991008597934657536</p><p>购买金额:&nbsp;<span style="color: rgb(255, 0, 0);">2.00元</span></p>',
+      title: '',
+      remark: '用户撤单退款',
+    },
+    {
+      id: '12241496',
+      userId: 100611895,
+      shopId: 37947,
+      msgType: 1,
+      msgTypeName: '订单消息',
+      msgSubType: 3,
+      msgSubTypeName: '已取消',
+      createTime: '2025-06-26 10:48:10',
+      status: 1,
+      orderNo: '41270617',
+      content:
+        '<p><strong>竞彩足球</strong>&nbsp;混合投注</p><p>购买时间:&nbsp;2025-06-26 10:48:03</p><p>订单编号:&nbsp;991008616234405888</p><p>购买金额:&nbsp;<span style="color: rgb(255, 0, 0);">2.00元</span></p>',
+      title: '',
+      remark: '用户撤单退款',
+    },
+  ],
+  code: 200,
+  msg: '查询成功',
+};
+
+export const mockData2: ServerCommonMessage.ListMessageResult = {
+  total: 2,
+  query: {
+    current: 1,
+    pageSize: 10,
+    sort: 'createdAt',
+    direction: 'desc',
+    userID: '100611895',
+  },
+  list: [
+    {
+      id: 12236262,
+      userId: 0,
+      shopId: 0,
+      msgType: 5,
+      msgTypeName: '公告消息',
+      msgSubType: 2,
+      msgSubTypeName: '系统公告',
+      createTime: '2025-06-26 08:09:36',
+      status: 2,
+      orderNo: 'null',
+      content:
+        '<p><strong>系统维护</strong></p><p><p>尊敬的用户：</p><p><br></p><p>为了为您提供更加稳定与安全的服务体验，平台将于</p><p>2025年6月26日 07:00 至 2025年6月26日 09:00进行系统维护</p><p><br></p><p>维护期间：</p><p>APP将无法登录及使用相关功能，敬请谅解。因本次维护给您带来的不便，我们深表歉意，</p><p><br></p><p>感谢您的理解与支持！</p><p>幸运团队敬上</p><p>2025年6月26日</p></p>',
+      title: null,
+      remark: null,
+    },
+    {
+      id: 12236253,
+      userId: 0,
+      shopId: 0,
+      msgType: 5,
+      msgTypeName: '公告消息',
+      msgSubType: 2,
+      msgSubTypeName: '系统公告',
+      createTime: '2025-06-26 07:06:38',
+      status: 1,
+      orderNo: 'null',
+      content:
+        '<p><strong>系统维护</strong></p><p><p>尊敬的用户：</p><p><br></p><p>为了为您提供更加稳定与安全的服务体验，平台将于</p><p>2025年6月26日 07:00 至 2025年6月26日 09:00进行系统维护</p><p><br></p><p>维护期间：</p><p>APP将无法登录及使用相关功能，敬请谅解。因本次维护给您带来的不便，我们深表歉意，</p><p><br></p><p>感谢您的理解与支持！</p><p>幸运团队敬上</p><p>2025年6月26日</p></p>',
+      title: null,
+      remark: null,
+    },
+  ],
+  code: 200,
+  msg: '查询成功',
+};
